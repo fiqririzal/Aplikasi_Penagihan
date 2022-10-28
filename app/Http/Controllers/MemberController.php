@@ -89,6 +89,27 @@ class MemberController extends Controller
                     return '-';
                 }
             )
+            ->addColumn(
+                'actions',
+                function ($row) {
+
+                    $hasTransaction = DB::table('transaksi')
+                        ->where('id_user', $row->id)
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+
+                    if ($hasTransaction) {
+                        $data = [
+                            'id' => $hasTransaction->id,
+                            'status' => $hasTransaction->status,
+                        ];
+                        return view('components.buttons.member', $data);
+                    }
+
+                    return '-';
+
+                }
+            )
             ->addIndexColumn()
             ->make(true);
     }

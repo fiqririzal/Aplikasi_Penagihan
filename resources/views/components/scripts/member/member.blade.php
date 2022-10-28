@@ -1,4 +1,28 @@
 <script>
+    let rental_id;
+    const editMember = (id) => {
+        Swal.fire({
+            title: 'Mohon tunggu',
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            willOpen: () => {
+                Swal.showLoading()
+            }
+        });
+        transaksi_id = id;
+        $.ajax({
+            type: "get",
+            url: `/transaksi/${transaksi_id}/edit`,
+            dataType: "json",
+            success: function(response) {
+                Swal.close();
+
+                alert('status updated');
+
+                $('#table').DataTable().ajax.reload();
+            }
+        });
+    }
 $(function () {
         $.ajaxSetup({
             headers: {
@@ -27,7 +51,8 @@ $(function () {
                     { data: 'total', orderable: false, searchable: false},
                     { data: 'created_at', orderable: false, searchable: false},
                     { data: 'status', orderable: false, searchable: false},
-                    // { data: 'action', orderable: false, searchable: false},
+                    { data: 'actions', orderable: false, searchable: false},
                 ]
             });
+
 </script>

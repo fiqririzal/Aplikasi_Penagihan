@@ -78,4 +78,28 @@ class TransaksiController extends Controller
 
         return Response::json($json);
     }
+    public function show(Request $request, $id)
+    {
+            try {
+                DB::transaction(function () use ($request, $id) {
+                    DB::table('transaksi')
+                    ->where('id', $id)
+                    ->update([
+                        'status' => 'paid',
+                    ]);
+                });
+                $json =[
+                    'msg'       => 'berhasil',
+                    'status'    => true,
+                ];
+            } catch (Exception $e) {
+                $json = [
+                    'msg'       => 'error',
+                    'status'    => false,
+                    'line'         => $e->getLine(),
+                    'e'         => $e->getMessage()
+                ];
+            }
+        return Response::json($json);
+    }
 }
