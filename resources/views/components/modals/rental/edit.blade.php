@@ -29,6 +29,14 @@
                     <input type="number" id="price" class="form-control price" name="price">
                 </label>
             </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select name="status" id="status" class="form-control">
+                <option value="disewa" >Disewa</option>
+                <option value="tersedia" >Tersedia</option>
+                </select>
+            </label>
+            </div>
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

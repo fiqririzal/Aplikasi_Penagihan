@@ -21,7 +21,7 @@
             type: "get",
             url: `/rental/${rental_id}`,
             dataType: "json",
-            success: function (response) {
+            success: function(response) {
                 $('#name_car').val(response.name_car);
                 $('#price').val(response.price);
                 $('#description').val(response.description);
@@ -32,7 +32,7 @@
             }
         });
     }
-    const deleteData = (id) =>{
+    const deleteData = (id) => {
         Swal.fire({
             title: 'Apa anda yakin untuk menghapus ini?',
             icon: 'warning',
@@ -42,7 +42,7 @@
         }).then((result) => {
             Swal.close();
 
-            if(result.value) {
+            if (result.value) {
                 Swal.fire({
                     title: 'Mohon tunggu',
                     showConfirmButton: false,
@@ -56,16 +56,16 @@
                     type: "delete",
                     url: `/rental/${id}`,
                     dataType: "json",
-                    success: function (response) {
+                    success: function(response) {
                         Swal.close();
-                        if(response.status){
+                        if (response.status) {
                             Swal.fire(
                                 'Success!',
                                 response.msg,
                                 'success'
                             )
                             $('#rental').DataTable().ajax.reload();
-                        }else{
+                        } else {
                             Swal.fire(
                                 'Error!',
                                 response.msg,
@@ -77,6 +77,33 @@
             }
         });
     }
+    const sewa = (id) => {
+        Swal.fire({
+            title: 'Mohon tunggu',
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            willOpen: () => {
+                Swal.showLoading()
+            }
+        });
+
+        rental_id = id;
+
+        $.ajax({
+            type: "get",
+            url: `/transaksi/${rental_id}`,
+            dataType: "json",
+            success: function(response) {
+                $('#name_car_sewa').val(response.name_car);
+                $('#price_sewa').val(response.price);
+                $('#description_sewa').val(response.description);
+                $('#image_sewa').val(response.image);
+                $('#status_sewa').val(response.status);
+                Swal.close();
+                $('#sewaModal').modal('show');
+            }
+        });
+    }
     $(function() {
         $.ajaxSetup({
             headers: {
@@ -84,8 +111,6 @@
             }
         });
 
-
-        @if(Auth::user()->getRoleNames()[0] == 'Admin')
         $('#rental').DataTable({
             order: [],
             lengthMenu: [
@@ -124,55 +149,14 @@
                     data: 'status',
                     name: 'rental.status'
                 },
-                { data: 'action',
-                  orderable: false,
-                  searchable: false
+                {
+                    data: 'action',
+                    orderable: false,
+                    searchable: false
                 },
 
             ]
         });
-        @else
-        $('#rental').DataTable({
-            order: [],
-            lengthMenu: [
-                [10, 25, 50, 100, -1],
-                ['Sepuluh', 'Salawe', 'lima puluh', 'cepe', 'kabeh']
-            ],
-            filter: true,
-            processing: true,
-            responsive: true,
-            serverSide: true,
-            ajax: {
-                url: '/rental/bebas'
-            },
-            "columns": [{
-                    data: 'DT_RowIndex',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'name_car',
-                    name: 'rental.name_car'
-                },
-                {
-                    data: 'description',
-                    name: 'rental.description'
-                },
-                {
-                    data: 'image',
-                    name: 'rental.image'
-                },
-                {
-                    data: 'price',
-                    name: 'rental.price'
-                },
-                {
-                    data: 'status',
-                    name: 'rental.status'
-                },
-            ]
-        });
-        @endif
         $('#createSubmit').click(function(e) {
             e.preventDefault();
 
@@ -196,7 +180,7 @@
                 }
             })
         });
-        $('#editSubmit').click(function (e) {
+        $('#editSubmit').click(function(e) {
             e.preventDefault();
 
             var formData = $('#editForm').serialize();
@@ -220,7 +204,7 @@
                 success: function(data) {
                     Swal.close();
 
-                    if(data.status) {
+                    if (data.status) {
                         Swal.fire(
                             'Success!',
                             data.msg,
@@ -229,6 +213,50 @@
 
                         rental_id = null;
                         $('#editModal').modal('hide');
+                        $('#rental').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            data.msg,
+                            'warning'
+                        )
+                    }
+                }
+            })
+        });
+        $('#editSewa').click(function(e) {
+            e.preventDefault();
+
+            var formData = $('#editFormSewa').serialize();
+
+            Swal.fire({
+                title: 'Mohon tunggu',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                willOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+
+            $.ajax({
+                type: "post",
+                url: `/transaksi/${rental_id}`,
+                data: formData,
+                dataType: "json",
+                cache: false,
+                processData: false,
+                success: function(data) {
+                    Swal.close();
+
+                    if (data.status) {
+                        Swal.fire(
+                            'Success!',
+                            data.msg,
+                            'success'
+                        )
+
+                        rental_id = null;
+                        $('#sewaModal').modal('hide');
                         $('#rental').DataTable().ajax.reload();
                     } else {
                         Swal.fire(

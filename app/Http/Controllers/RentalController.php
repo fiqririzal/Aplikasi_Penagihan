@@ -20,7 +20,6 @@ class RentalController extends Controller
     }
     public function store(Request $request)
     {
-
         if ($request->name_car == NULL) {
             $json = [
                 'msg'       => 'Mohon masukan nama produk',
@@ -88,12 +87,6 @@ class RentalController extends Controller
         }
         $data = DB::table('rental')->orderBy('rental.id', 'desc');
         return DataTables::of($data)
-            // ->editColumn(
-            //     'price',
-            //     function($row) {
-            //         return number_format($row->price);
-            //     }
-            // )
             ->addColumn(
                 'action',
                 function ($row) {
@@ -175,4 +168,55 @@ class RentalController extends Controller
             };
         return Response::json($json);
     }
+    // public function sewaUpdate(Request $request, $id)
+    // {
+    //     if ($request->name_car == NULL) {
+    //         $json = [
+    //             'msg'       => 'Mohon masukan nama produk',
+    //             'status'    => false
+    //         ];
+    //     } elseif ($request->price == NULL) {
+    //         $json = [
+    //             'msg'       => 'Mohon masukan price',
+    //             'status'    => false
+    //         ];
+    //     } elseif ($request->description == NULL) {
+    //         $json = [
+    //             'msg'       => 'Mohon masukan deskripsi',
+    //             'status'    => false
+    //         ];
+    //     }
+    //     elseif ($request->status == NULL) {
+    //         $json = [
+    //             'msg'       => 'Mohon masukan status',
+    //             'status'    => false
+    //         ];
+    //     }
+    //     else {
+    //         try {
+    //             DB::transaction(function () use ($request, $id) {
+    //                 DB::table('rental')->where('id', $id)->update([
+    //                     'name_car' => $request->name_car,
+    //                     'price' => $request->price,
+    //                     'description' => $request->description,
+    //                     'image' => $request->image,
+    //                     'status' => $request->status,
+    //                 ]);
+    //             });
+
+    //             $json =[
+    //                 'msg'       => 'error',
+    //                 'status'    => true,
+    //             ];
+    //         } catch (Exception $e) {
+    //             $json = [
+    //                 'msg'       => 'error',
+    //                 'status'    => false,
+    //                 'line'         => $e->getLine(),
+    //                 'e'         => $e->getMessage()
+    //             ];
+    //         }
+    //     }
+    //     return Response::json($json);
+    // }
 }

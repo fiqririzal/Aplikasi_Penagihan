@@ -24,6 +24,7 @@ Route::group([
     });
     Require_once('includes/member.php');
     Require_once('includes/rental.php');
+    Require_once('includes/transaksi.php');
 });
 
 

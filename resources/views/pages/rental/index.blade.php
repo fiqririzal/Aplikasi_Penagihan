@@ -7,7 +7,9 @@
 <div class="card">
     <div class="card-body">
       <h4 class="card-title">Mobil Rentalan</h4>
+      @role('Admin')
       <button type="button" class="btn btn-gradient-primary btn-rounded btn-fw" onclick="create()">Tambah Stok</button>
+      @endrole
       <table class="table table-striped" id="rental">
         <thead>
           <tr>
@@ -28,6 +30,7 @@
   </div>
   @include('components.modals.rental.create')
   @include('components.modals.rental.edit')
+  @include('components.modals.rental.sewa')
 
 @push('script')
 

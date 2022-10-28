@@ -17,70 +17,79 @@ class MemberController extends Controller
         ];
         return view('pages.member.index', $data);
     }
-    // public function store(Request $request){
-    //         if ($request->name == NULL) {
-    //             $json = [
-    //                 'msg'       => 'Mohon masukan nama produk',
-    //                 'status'    => false
-    //             ];
-    //         } elseif ($request->address == NULL) {
-    //             $json = [
-    //                 'msg'       => 'Mohon masukan price',
-    //                 'status'    => false
-    //             ];
-    //         } elseif ($request->phone == NULL) {
-    //             $json = [
-    //                 'msg'       => 'Mohon masukan price',
-    //                 'status'    => true
-    //             ];
-    //         } else {
-    //             try {
-    //                 DB::transaction(function () use ($request) {
-    //                     DB::table('member')->insert([
-    //                         'created_at' => date('Y-m-d H:i:s'),
-    //                         'name' => $request->name,
-    //                         'address' => $request->address,
-    //                         'phone' => $request->phone,
-    //                         // 'image' => $image,
-    //                         // 'status' => $request->status,
-
-    //                     ]);
-    //                 });
-
-    //                 $json = [
-    //                     'msg' => 'Produk berhasil ditambahkan',
-    //                     'status' => true
-    //                 ];
-    //             } catch (Exception $e) {
-    //                 $json = [
-    //                     'msg'       => 'error',
-    //                     'status'    => false,
-    //                     'e'         => $e
-    //                 ];
-    //             }
-    //         }
-
-    //         return Response::json($json);
-    //     }
-    // }
 
     public function show($id)
-     {
-            if (is_numeric($id)) {
-                $data = DB::table('users')->where('id', $id)->first();
-                // $data->price = intval($data->price);
-                return Response::json($data);
-            }
-            $data = DB::table('users')
-                ->join('model_has_roles', 'model_has_roles.model_id','=','users.id')
-                ->select([
-                    'users.*'
-                ])
-                ->where('model_has_roles.role_id', 2)
-                ->orderBy('users.id', 'desc');
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->make(true);
+    {
+        if (is_numeric($id)) {
+            $data = DB::table('users')->where('id', $id)->first();
+            return Response::json($data);
         }
-    }
+        $data = DB::table('users')
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+            ->select([
+                'users.*'
+            ])
+            ->where('model_has_roles.role_id', 2)
+            ->orderBy('users.id', 'desc');
+        return DataTables::of($data)
+            ->addColumn(
+                'pinjaman',
+                function ($row) {
+                    $hasTransaction = DB::table('transaksi')
+                        ->where('id_user', $row->id)
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+                    if ($hasTransaction) {
+                        return $hasTransaction->hari . ' hari';
+                    }
+                    return '-';
+                }
+            )
+            ->addColumn(
+                'name_car',
+                function () {
+                    $hasTransaction = DB::table('rental')
+                        ->orderBy('created_at', 'desc')
+                        ->first();
 
+                    if ($hasTransaction) {
+                        return $hasTransaction->name_car;
+                    }
+
+                    return '-';
+                }
+            )
+            ->addColumn(
+                'total',
+                function ($row) {
+                    $hasTransaction = DB::table('transaksi')
+                        ->where('id_user', $row->id)
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+
+                    if ($hasTransaction) {
+                        return $hasTransaction->total;
+                    }
+
+                    return '-';
+                }
+            )
+            ->addColumn(
+                'status',
+                function ($row) {
+                    $hasTransaction = DB::table('transaksi')
+                        ->where('id_user', $row->id)
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+
+                    if ($hasTransaction) {
+                        return $hasTransaction->status;
+                    }
+
+                    return '-';
+                }
+            )
+            ->addIndexColumn()
+            ->make(true);
+    }
+}

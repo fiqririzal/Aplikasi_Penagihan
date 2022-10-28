@@ -1,9 +1,4 @@
 <script>
-
-
-
-
-
 $(function () {
         $.ajaxSetup({
             headers: {
@@ -27,6 +22,12 @@ $(function () {
                     { data: 'name', name:'user.name'},
                     { data: 'address', name:'user.address'},
                     { data: 'phone', name:'user.phone'},
+                    { data: 'name_car', name:'rental.name_car'},
+                    { data: 'pinjaman', orderable: false, searchable: false},
+                    { data: 'total', orderable: false, searchable: false},
+                    { data: 'created_at', orderable: false, searchable: false},
+                    { data: 'status', orderable: false, searchable: false},
+                    // { data: 'action', orderable: false, searchable: false},
                 ]
             });
 </script>

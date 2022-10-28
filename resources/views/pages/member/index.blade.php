@@ -9,7 +9,7 @@
       <h4 class="card-title">Member</h4>
       <p class="card-description"> Add class <code>.table-striped</code>
       </p>
-      <table class="table table-striped"id="table">
+      <table class="table table-striped" id="table">
         <thead>
           <tr>
             <th> No </th>
@@ -17,9 +17,11 @@
             <th> Alamat </th>
             <th> No Hp </th>
             <th> Pinjaman </th>
+            <th> Hari</th>
             <th> Tagihan </th>
             <th> Deadline </th>
             <th> Status </th>
+            <th> Aksi </th>
           </tr>
         </thead>
         <tbody>
