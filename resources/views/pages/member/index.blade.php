@@ -10,7 +10,6 @@
       <p class="card-description"> Add class <code>.table-striped</code>
       </p>
       <div class="table-responsive">
-
           <table class="table table-striped" id="table">
             <thead>
               <tr>

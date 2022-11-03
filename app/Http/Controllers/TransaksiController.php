@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -13,6 +14,9 @@ class TransaksiController extends Controller
 {
     public function store($id)
     {
+        // $kendaraan = DB::table('rental')->where('id', $id)->first();
+        // $date = $kendaraan->lama_sewa;
+
         if (is_numeric($id)) {
             $data = DB::table('rental')->where('id', $id)->first();
             $data->price = intval($data->price);
@@ -34,6 +38,7 @@ class TransaksiController extends Controller
     }
     public function update(Request $request, $id)
     {
+
         if($request->status == NULL) {
             $json = [
                 'msg'       => 'Mohon masukan status',
@@ -52,6 +57,25 @@ class TransaksiController extends Controller
 
                     $total = ($kendaraan->price * $request->lama_sewa);
 
+                    // $date = $kendaraan->lama_sewa;
+                    // $datework = Carbon::createFromDate($date);
+                    // $now = Carbon::now();
+                    // $testdate = $datework->diffInDays($now);
+
+                    // dd($testdate);
+
+                    // $dob = Carbon::parse($kendaraan['lama_sewa']);
+                    //  $now = Carbon::now();
+                    //  $testdate = $dob->diffInDays($now);
+                    // $deadline = $dob->$lama_sewa;
+
+                    // $datework = Carbon::createFromDate('Y-m-d H', '2022-10-25 22');
+                    // $now = Carbon::now();
+                    // $testdate = $datework->diffInDays($now);
+
+                    // dd($testdate);
+
+
                     DB::table('transaksi')->insert([
                         'created_at' => date('Y-m-d H:i:s'),
                         'id_user' => Auth::user()->id,
@@ -68,6 +92,7 @@ class TransaksiController extends Controller
                     'status' => true
                 ];
             } catch (Exception $e) {
+                dd($e);
                 $json = [
                     'msg'       => 'error',
                     'status'    => false,
@@ -100,6 +125,27 @@ class TransaksiController extends Controller
                     'e'         => $e->getMessage()
                 ];
             }
+        return Response::json($json);
+    }
+    public function destroy($id)
+    {
+        try{
+            DB::transaction(function()use($id)
+            {
+                DB::table('transaksi')->where('id',$id)->delete();
+            });
+            $json =[
+                'msg'=>'Member Berhasil Dihapus',
+                'status'=>true
+
+            ];
+        }catch(Exception $e){
+                $json =[
+                    'msg'=>'error',
+                    'status'=>false,
+                    'e'=>$e,
+                ];
+            };
         return Response::json($json);
     }
 }

@@ -83,10 +83,17 @@ class RentalController extends Controller
         if (is_numeric($id)) {
             $data = DB::table('rental')->where('id', $id)->first();
             $data->price = intval($data->price);
+
             return Response::json($data);
         }
         $data = DB::table('rental')->orderBy('rental.id', 'desc');
         return DataTables::of($data)
+            ->addColumn(
+                'image',
+                function ($row) {
+                    return '<img class="img img-thumbnail" src="'.asset('/images/'.$row->image).'">';
+                }
+            )
             ->addColumn(
                 'action',
                 function ($row) {
@@ -94,8 +101,10 @@ class RentalController extends Controller
                         'id' => $row->id
                     ];
                     return view('components.buttons.rental', $data);
+
                 }
             )
+            ->rawColumns(['image'])
             ->addIndexColumn()
             ->make(true);
     }

@@ -5,6 +5,8 @@
 @endif
 @endrole
 @role('Admin')
+<button type="button" class="btn btn-gradient-warning btn-sm" onclick=" deleteMember({{ $id }})">
+<i class="mdi mdi-reload btn-icon-prepend"></i> Delete </button>
 @if($status == 'pending')
 <button type="button" class="btn btn-gradient-dark btn-sm" onclick=" editMember({{ $id }})"> Selesai <i class="mdi mdi-file-check btn-icon-append"></i>
 @endif

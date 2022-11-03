@@ -113,4 +113,5 @@ class MemberController extends Controller
             ->addIndexColumn()
             ->make(true);
     }
+    
 }

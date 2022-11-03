@@ -16,10 +16,53 @@
             dataType: "json",
             success: function(response) {
                 Swal.close();
-
                 alert('status updated');
-
                 $('#table').DataTable().ajax.reload();
+            }
+        });
+    }
+    const deleteMember = (id) => {
+        Swal.fire({
+            title: 'Apa anda yakin untuk menghapus ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ya',
+            cancelButtonText: 'tidak'
+        }).then((result) => {
+            Swal.close();
+
+            if (result.value) {
+                Swal.fire({
+                    title: 'Mohon tunggu',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    willOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+
+                $.ajax({
+                    type: "delete",
+                    url: `/transaksi/${id}`,
+                    dataType: "json",
+                    success: function(response) {
+                        Swal.close();
+                        if (response.status) {
+                            Swal.fire(
+                                'Success!',
+                                response.msg,
+                                'success'
+                            )
+                            $('#table').DataTable().ajax.reload();
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                response.msg,
+                                'warning'
+                            )
+                        }
+                    }
+                });
             }
         });
     }
@@ -32,6 +75,8 @@ $(function () {
     });
     $('#table').DataTable({
                 order: [],
+                // dom: 'Bfrtip',
+                // buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
                 lengthMenu: [[10, 25, 50, 100, -1], ['Sepuluh', 'Salawe', 'lima puluh', 'cepe', 'kabeh']],
                 filter: true,
                 processing: true,
@@ -54,5 +99,4 @@ $(function () {
                     { data: 'actions', orderable: false, searchable: false},
                 ]
             });
-
 </script>
